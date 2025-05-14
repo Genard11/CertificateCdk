@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login / Sign Up</title>
+  <style>
+    body {
+      font-family: Arial;
+      margin: 0;
+      padding: 0;
+      background-color: #eef2f3;
+    }
+    .navbar {
+      display: flex;
+      justify-content: flex-end;
+      background-color: #2c3e50;
+      padding: 15px;
+    }
+    .navbar a {
+      color: white;
+      padding: 10px;
+      text-decoration: none;
+      margin-left: 15px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .navbar a:hover {
+      background-color: #34495e;
+    }
+    .container {
+      max-width: 400px;
+      background: white;
+      margin: 100px auto;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+    <a href="home.html">Home</a>
+    <a href="requests.html">Requests</a>
+    <a href="about.html">About</a>
+    <a href="home.html">Log Out</a>
+  </div>
+
+  <div class="container">
+    <h2>Log In / Sign Up</h2>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Log In</button>
+    <button onclick="signUp()">Sign Up</button>
+  </div>
+
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbz9SStbyDMOPXFf2Aman6R1-06e_lYfnmzQQe1vbwTx_NpZuD_JrffBPQV07xu6Ab4Fhg/exec";
+
+    function signUp() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      if (!email || !password) return alert("Please enter both email and password.");
+
+      const timestamp = new Date().toLocaleString();
+
+      fetch(scriptURL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "signup",
+          timestamp: timestamp,
+          email: email,
+          password: password
+        })
+      });
+
+      alert("Sign up successful. You can now log in.");
+    }
+function login() {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  if (!email || !password) return alert("Please enter both email and password.");
+
+  fetch(`${scriptURL}?action=login&email=${email}&password=${password}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert("Login successful. Welcome, " + data.email + "!");
+        window.location.href = "requests.html"; // redirect after login
+      } else {
+        alert("Invalid credentials.");
+      }
+    })
+    .catch(() => alert("Login failed. Please try again."));
+}
